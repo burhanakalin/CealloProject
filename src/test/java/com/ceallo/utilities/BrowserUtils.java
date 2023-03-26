@@ -1,7 +1,8 @@
-package com.group14.utilities;
+package com.ceallo.utilities;
 
 import org.junit.Assert;
 import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -11,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class BrowserUtils {
 
@@ -183,6 +185,17 @@ for given duration
     }
 
     /**
+     * Performs a implicitlyWait
+     *
+     * @param seconds
+     */
+    public static void implicitlyWait(int seconds) {
+        Driver.getDriver().manage().timeouts().implicitlyWait(seconds,TimeUnit.SECONDS);
+    }
+
+
+
+    /**
      * Waits for the provided element to be visible on the page
      *
      * @param element
@@ -339,6 +352,17 @@ for given duration
         ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].click();", element);
     }
 
+    /**
+     * Two times Clicks on an element using JavaScript
+     *
+     * @param element
+     */
+    public static void TwoClickWithJS(WebElement element) {
+        ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].click();", element);
+        ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].click();", element);
+    }
+
+
 
     /**
      * Scrolls down to an element using JavaScript
@@ -348,6 +372,34 @@ for given duration
     public static void scrollToElement(WebElement element) {
         ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
     }
+
+    /**
+     * Infinite Scroll down to bottom using JavaScript
+     */
+
+    public static void scrollToBottom(){
+
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+
+        long intialLength = (long) js.executeScript("return document.body.scrollHeight");
+
+
+        while(true){
+            js.executeScript("window.scrollTo(0,document.body.scrollHeight)");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            long currentLength = (long) js.executeScript("return document.body.scrollHeight");
+            if(intialLength == currentLength) {
+                break;
+            }
+            intialLength = currentLength;
+        }
+    }
+
 
     /**
      * Performs double click action on an element
@@ -434,6 +486,38 @@ for given duration
         JavascriptExecutor jse = (JavascriptExecutor) Driver.getDriver();
         jse.executeScript(command);
 
+    }
+
+    /**
+     * This method will click to the element until the element2
+     *
+     * @param expectedElement
+     * @param element
+     */
+    public static void clickUntilElementAppears(WebElement element, WebElement expectedElement) {
+        //click on element as many as you specified in attempts parameter
+        int count = 1;
+        clickWithJS(element);
+        while (expectedElement.isDisplayed()) {
+            try {
+                //selenium must look for element again
+                clickWithJS(element);
+                //if click is successful - then break
+                break;
+            } catch (WebDriverException e) {
+                //if click failed
+                //print exception
+                //print attempt
+                e.printStackTrace();
+                //wait for 1 second, and try to click again
+                waitFor(1);
+                count++;
+                System.out.println("Count"+count);
+                if(count == 5){
+                break;
+            }
+            }
+        }
     }
 
 

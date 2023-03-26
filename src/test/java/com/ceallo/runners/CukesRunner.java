@@ -1,4 +1,4 @@
-package com.group14.runners;
+package com.ceallo.runners;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
@@ -14,12 +14,10 @@ import org.junit.runner.RunWith;
                 "json:target/cucumber.json"
         },
         features = "src/test/resources/features",
-        glue = "com/cydeo/step_definitions",
+        glue = "com/ceallo/step_definitions",
         dryRun = false,
-      //  tags = "@smoke",
+        tags = "@wip",
         publish=true
-
-
 )
 
 public class CukesRunner {

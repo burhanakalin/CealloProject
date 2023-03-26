@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.test</groupId>
-    <artifactId>Template-BDD-Cucumber</artifactId>
+    <artifactId>CealloProject</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

@@ -1,4 +1,4 @@
-package com.group14.utilities;
+package com.ceallo.utilities;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -47,7 +47,7 @@ public class Driver {
             browserType = System.getProperty("BROWSER");
             System.out.println("browser type was adjusted");
         }
-        System.out.println("browserType = " + browserType);
+        //System.out.println("browserType = " + browserType);
         if (driverPool.get() == null){
             /*
                 Depending on the browserType that will be return from configuration.properties file
@@ -69,7 +69,7 @@ public class Driver {
                     break;
                 case "remote-chrome":
                     // assign your grid server address
-                    String gridAdress = "3.86.13.183"; // put your own Linux grid IP here
+                    String gridAdress = "100.25.201.253"; // put your own Linux grid IP here
                     try {
                         URL url = new URL("http://"+gridAdress+":4444/wd/hub");
                         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
