@@ -10,6 +10,9 @@ import org.junit.Assert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DeletedFilesTab_StepDef {
 
     DeletedFilesTab deletedFilesTab = new DeletedFilesTab();
@@ -20,6 +23,7 @@ public class DeletedFilesTab_StepDef {
     @When("deleted files are ordered by newest to oldest")
     public void deletedFilesAreOrderedByNewestToOldest() {
 
+        //scroll to page bottom and click to sort button
         BrowserUtils.scrollToBottom();
         BrowserUtils.implicitlyWait(10);
         BrowserUtils.TwoClickWithJS(deletedFilesTab.sortIconDate);
@@ -31,14 +35,18 @@ public class DeletedFilesTab_StepDef {
     @Then("user should see recent deleted file")
     public void userShouldSeeRecentDeletedFile() {
 
+
         BrowserUtils.implicitlyWait(10);
         System.out.println("TrashBinElements.size() = " + deletedFilesTab.trashBinElements.size());
 
+        //get all the "data-mtime" attributes to compare "Delete time"
         for (int i = 1; i < deletedFilesTab.trashBinElements.size()-1; i++) {
 
+        //convert string values to Long
             long intDate1 = Long.parseLong(deletedFilesTab.trashBinElements.get(i).getAttribute("data-mtime"));
             long intDate2 = Long.parseLong(deletedFilesTab.trashBinElements.get(i+1).getAttribute("data-mtime"));
 
+        //verify if the elements ordered correctly (recent deleted file has bigger "data-mtime" value
             Assert.assertTrue(intDate1 >= intDate2);
         }
 
@@ -49,6 +57,7 @@ public class DeletedFilesTab_StepDef {
     @When("user orders the deleted files by newest to oldest")
     public void user_orders_the_deleted_files_by_newest_to_oldest() {
 
+        //scroll to page bottom and order element newest to oldest
         BrowserUtils.scrollToBottom();
         BrowserUtils.implicitlyWait(10);
         BrowserUtils.TwoClickWithJS(deletedFilesTab.sortIconDate);
@@ -60,11 +69,14 @@ public class DeletedFilesTab_StepDef {
 
         BrowserUtils.implicitlyWait(10);
 
+        //get all the "data-mtime" attributes to compare "Delete time"
         for (int i = 1; i < deletedFilesTab.trashBinElements.size()-1; i++) {
 
+        //convert string values to Long
             long intDate1 = Long.parseLong(deletedFilesTab.trashBinElements.get(i).getAttribute("data-mtime"));
             long intDate2 = Long.parseLong(deletedFilesTab.trashBinElements.get(i+1).getAttribute("data-mtime"));
 
+        //verify if the elements ordered correctly (recent deleted file has bigger "data-mtime" value
             Assert.assertTrue(intDate1 >= intDate2);
         }
     }
@@ -96,6 +108,7 @@ public class DeletedFilesTab_StepDef {
     @When("user clicks on alphabetically sort button")
     public void user_clicks_on_alphabetically_sort_button() {
 
+        //scroll to bottom and click on name sort bottom to sort elements by name
         BrowserUtils.scrollToBottom();
         BrowserUtils.implicitlyWait(10);
 
@@ -108,20 +121,27 @@ public class DeletedFilesTab_StepDef {
 
             for (int i1 = 0; i1 < deletedFilesTab.trashBinElements.size()-1; i1++) {
 
+                //get each row's "data-type" and "data-file" attributes
                 String dataName1 = deletedFilesTab.trashBinElements.get(i1).getAttribute("data-type");
                 String fileName1 = deletedFilesTab.trashBinElements.get(i1).getAttribute("data-file");
-//                System.out.println("i1 = " + i1);
-//                System.out.println("fileName1 = " + fileName1);
 
+                //get the following row's "data-type" and "data-file" attributes
                 String dataName2 = deletedFilesTab.trashBinElements.get((i1+1)).getAttribute("data-type");
                 String fileName2 = deletedFilesTab.trashBinElements.get((i1+1)).getAttribute("data-file");
-//                System.out.println("(i1+1) = " + (i1 + 1));
-//                System.out.println("fileName2 = " + fileName2);
 
+                //compare each and following names by using compareToIgnoreCase method
+                /**
+                 * An int value: 0 if the string is equal to the other string, ignoring case differences.
+                 * < 0 if the string is lexicographically less than the other string
+                 * > 0 if the string is lexicographically greater than the other string (more characters)
+                 */
                 boolean verifyAlp = fileName1.compareToIgnoreCase(fileName2) <= 0;
+
+                //verify if each two compared elements has the same "data-type"
                 boolean dirBol = (dataName1.equals("dir")) && (dataName2.equals("dir"));
                 boolean fileBol = (dataName1.equals("file")) && (dataName2.equals("file"));
 
+                //under the previous condition, verify if the elements are correctly ordered or not
                 if(dirBol){
                     Assert.assertTrue(verifyAlp);
                     //System.out.println("DirTrue");
@@ -139,13 +159,14 @@ public class DeletedFilesTab_StepDef {
     @When("user three dots icon and sees the Delete permanently button")
     public void user_three_dots_icon_and_sees_the_delete_permanently_button() {
 
+        //order all deleted elements newest to oldest
         deletedFilesAreOrderedByNewestToOldest();
 
-        String firstRowNameBeforeDeletion = deletedFilesTab.firstRowFileName.getText();
-
+        //click on three dots on first row
         BrowserUtils.implicitlyWait(10);
         BrowserUtils.clickWithJS(deletedFilesTab.firstRowThreeDots);
 
+        //verify if the "Delete Permanently" button is displayed
         Assert.assertTrue(deletedFilesTab.deletePermanentlyButton.isDisplayed());
 
     }
@@ -153,17 +174,22 @@ public class DeletedFilesTab_StepDef {
     @Then("user is able to delete file permanently")
     public void user_is_able_to_delete_file_permanently() {
 
+        //order all deleted elements newest to oldest
         deletedFilesAreOrderedByNewestToOldest();
 
+        //get the first row element's name
         String firstRowNameBeforeDeletion = deletedFilesTab.firstRowFileName.getText();
 
+        //delete first rowed element permanently
         BrowserUtils.implicitlyWait(10);
         BrowserUtils.clickWithJS(deletedFilesTab.firstRowThreeDots);
         BrowserUtils.clickWithJS(deletedFilesTab.deletePermanentlyButton);
 
+        //after deletion, again get the first rowed element's name
         BrowserUtils.sleep(5);
         String firstRowNameAfterDeletion = deletedFilesTab.firstRowFileName.getText();
 
+        //compare first rowed element's name before and after deletion to verify if the element disappeared or not
         Assert.assertNotEquals(firstRowNameBeforeDeletion, firstRowNameAfterDeletion);
 
     }
@@ -173,49 +199,51 @@ public class DeletedFilesTab_StepDef {
     @When("user clicks on restore button and file disappears from deleted files list")
     public void user_clicks_on_restore_button_and_file_disappears_from_deleted_files_list() {
 
+        //order all deleted elements newest to oldest
         deletedFilesAreOrderedByNewestToOldest();
 
-        String firstRowNameBeforeRestore = deletedFilesTab.firstRowFileName.getText();
+        //get the first row element's name
+        String firstRowNameBeforeRestore1 = deletedFilesTab.firstRowFileName.getText();
 
+        //restore first rowed element
         BrowserUtils.implicitlyWait(10);
         BrowserUtils.clickWithJS(deletedFilesTab.restoreButton);
 
-        BrowserUtils.sleep(5);
+        //after restore, again get the first rowed element's name
+        BrowserUtils.sleep(10);
         String firstRowNameAfterRestore = deletedFilesTab.firstRowFileName.getText();
 
-        Assert.assertNotEquals(firstRowNameBeforeRestore, firstRowNameAfterRestore);
+        //compare first rowed element's name before and after restore to verify if the element disappeared or not
+        Assert.assertNotEquals(firstRowNameBeforeRestore1, firstRowNameAfterRestore);
 
     }
 
     @Then("user can see the restored file in all files list")
     public void user_can_see_the_restored_file_in_all_files_list() {
 
+        //order all deleted elements newest to oldest
         deletedFilesAreOrderedByNewestToOldest();
 
+        //get the first row element's name and restore the first element
         String firstRowNameBeforeRestore = deletedFilesTab.firstRowFileName.getText();
         BrowserUtils.clickWithJS(deletedFilesTab.restoreButton);
 
+        //go to AllFilesTab
         BrowserUtils.implicitlyWait(10);
-        BrowserUtils.clickWithJS(allFilesTab.deletedFilesTab);
+        BrowserUtils.clickWithJS(allFilesTab.AllFilesTab);
 
         BrowserUtils.sleep(5);
 
-        for (WebElement each : allFilesTab.allFilesElements) {
-
-            String fileName = each.getAttribute("data-file");
-            String firstRowNameAfterRestore = fileName.substring(0, fileName.indexOf("."));
-
-
-            if(firstRowNameBeforeRestore.equals(firstRowNameAfterRestore)){
-                Assert.assertTrue(true);
-                break;
-            }
-
+        //verify if the restored element came back to AllFilesTab
+        List<String> elementName = new ArrayList<>();
+        for (WebElement eachElement : allFilesTab.allFilesElements) {
+            elementName.add(eachElement.getText());
         }
-
+        Assert.assertTrue(elementName.contains(firstRowNameBeforeRestore));
 
     }
 }
+
 
 
 

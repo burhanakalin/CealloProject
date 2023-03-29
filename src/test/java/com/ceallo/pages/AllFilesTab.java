@@ -15,9 +15,12 @@ public class AllFilesTab {
     public WebElement allFilesFirstRowFile;
 
     @FindBy(xpath = "//*[@id='app-navigation']/ul/li[1]//a")
-    public WebElement deletedFilesTab;
+    public WebElement AllFilesTab;
 
-    @FindBy(xpath = "(//div[@id='app-content-files']//tbody//tr)")
+//    @FindBy(xpath = "(//div[@id='app-content-files']//tbody//tr)")
+//    public List<WebElement> allFilesElements;
+
+    @FindBy(xpath = "(//div[@id='app-content-files']//table//tbody//tr)//td[2]//a//span[1]//span[@class='innernametext']")
     public List<WebElement> allFilesElements;
 
 
